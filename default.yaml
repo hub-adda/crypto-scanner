@@ -1,0 +1,11 @@
+patterns:
+  - name: "Pthread Functions"
+    description: "Matches any pthread-related functions, typically used for threading operations in Unix-like systems."
+    regex: "_pthread_.*"
+    found_result: "warn"
+    not_found_result: "err"
+  - name: "Crypto Functions"
+    description: "Matches any functions related to cryptographic operations, often found in security and encryption libraries."
+    regex: "_crypto_.*"
+    found_result: "warn"
+    not_found_result: "err"
