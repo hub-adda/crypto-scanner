@@ -206,19 +206,19 @@ func checkCallGraph(codeFilePath string, rules []utils.Rule) {
 }
 
 func printCallTree(prog *ssa.Program, cg *callgraph.Graph, fn *ssa.Function, level int) {
-    node := cg.Nodes[fn]
-	if node == nil || level == 5{
+	node := cg.Nodes[fn]
+	if node == nil || level == 5 {
 		return
 	}
 
-    for _, edge := range node.In {
-        caller := edge.Caller.Func
-        fmt.Printf("%s%s\n", strings.Repeat("  ", level), caller.String())
+	for _, edge := range node.In {
+		caller := edge.Caller.Func
+		fmt.Printf("%s%s\n", strings.Repeat("  ", level), caller.String())
 		// print file and line number
 		pos := prog.Fset.Position(caller.Pos())
 		fmt.Printf("%s%s:%d\n", strings.Repeat("  ", level), pos.Filename, pos.Line)
-        printCallTree(prog, cg, caller, level+1)
-    }
+		printCallTree(prog, cg, caller, level+1)
+	}
 }
 
 func commentFipsImport(filePath string) error {

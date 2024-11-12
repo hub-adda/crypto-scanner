@@ -10,7 +10,18 @@ crypto-scanner is a comprehensive tool designed to enhance the security of Go ap
   - **Unsafe Cryptography**: Identifies the use of cryptographic functions that are considered insecure.
   - **FIPS-Compliant**: Ensures that the cryptographic functions used comply with FIPS (Federal Information Processing Standards) specific rules.
 - **Code Checker**: Analyzes source code to identify insecure cryptographic practices.
-- **Future Plans**: Aims to develop a Go fork that removes unsafe implementations from the standard crypto libraries, ensuring that only secure cryptographic functions are available.
+- **Safe Compiler [future]**: A Go compiler that prevents compilation if unsafe implementations are found. It should identify unsafe usage of standard crypto libraries such as MD5, SHA-1. It will ensure that only secure cryptographic functions are available.
+
+## Installation
+
+1. Clone the repo and build the tools:
+```
+git clone --branch draft https://github.com/GilAddaCyberark/crypto-scanner/
+cd crypto-scanner
+chmod a+x ./install.sh
+./install.sh
+```
+
 
 ## Usage
 
@@ -30,4 +41,77 @@ CGO_ENABLED=1 GOOS=linux GOARCH=arm64 GOEXPERIMENT=boringcrypto go build -tags b
 In some machines a FIPS binary cannot build with as local cc compiler, therefore there is a way to build it in a docer file
 
 ### build the FIPS binary in using docker
+
+
+
+## TODOs in next steps
+1. binary-checker: add go version conditions as GOOS or minimal go version (output below)
+1. binary-checker: download and build the tool using a single command (e.g curl install script| bash
+1. complete code usage of unsafe functions as sha1, md5 which are part if the go standard libraries
+1. add contribution and license policy
+
+
+### go version output example
+This is the example output of the go version tool. 
+```
+go version -m binary-checker
+```
+binary-checker: go1.23.1
+        path    crypto-scanner/cmd/binary-checker
+        mod     crypto-scanner  (devel)
+        dep     gopkg.in/yaml.v2        v2.4.0  h1:D8xgwECY7CYvx+Y2n4sBz93Jn9JRvxdiyyo8CTfuKaY=
+        build   -buildmode=exe
+        build   -compiler=gc
+        build   CGO_ENABLED=1
+        build   CGO_CFLAGS=
+        build   CGO_CPPFLAGS=
+        build   CGO_CXXFLAGS=
+        build   CGO_LDFLAGS=
+        build   GOARCH=arm64
+        build   GOOS=darwin
+        build   GOARM64=v8.0
+        build   vcs=git
+        build   vcs.revision=6bb4da79ff6a79852d58eece9dc88e1ea69c483d
+        build   vcs.time=2024-11-12T13:42:30Z
+        build   vcs.modified=false
+
+```
+go version -m binary-checker examples/fips/build/fips_web_server_linux
+```
+This is the output of a FIPS-140 compliant binary  ( GOEXPERIMENT=boringcrypto, )
+
+binary-checker: go1.23.1
+        path    crypto-scanner/cmd/binary-checker
+        mod     crypto-scanner  (devel)
+        dep     gopkg.in/yaml.v2        v2.4.0  h1:D8xgwECY7CYvx+Y2n4sBz93Jn9JRvxdiyyo8CTfuKaY=
+        build   -buildmode=exe
+        build   -compiler=gc
+        build   CGO_ENABLED=1
+        build   CGO_CFLAGS=
+        build   CGO_CPPFLAGS=
+        build   CGO_CXXFLAGS=
+        build   CGO_LDFLAGS=
+        build   GOARCH=arm64
+        build   GOOS=darwin
+        build   GOARM64=v8.0
+        build   vcs=git
+        build   vcs.revision=6bb4da79ff6a79852d58eece9dc88e1ea69c483d
+        build   vcs.time=2024-11-12T13:42:30Z
+        build   vcs.modified=false
+examples/fips/build/fips_web_server_linux: go1.23.2 X:boringcrypto
+        path    command-line-arguments
+        build   -buildmode=exe
+        build   -compiler=gc
+        build   -tags=boringcrypto
+        build   CGO_ENABLED=1
+        build   CGO_CFLAGS=
+        build   CGO_CPPFLAGS=
+        build   CGO_CXXFLAGS=
+        build   CGO_LDFLAGS=
+        build   GOARCH=arm64
+        build   GOEXPERIMENT=boringcrypto
+        build   GOOS=linux
+        build   GOARM64=v8.0
+
+The future plan is to set conditions and validate the binary under those conditions
 

@@ -127,8 +127,8 @@ func unsafe_md4_example() {
 }
 
 func unsafe_sha1_example() {
-// 	hash := sha1.New()
-// 	hash.Write([]byte(data))
+	// hash := sha1.New()
+	// hash.Write([]byte(data))
 }
 
 func unsafe_md2_example() {

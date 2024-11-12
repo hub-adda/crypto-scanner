@@ -15,6 +15,7 @@ const (
 	invalidBinaryExitCode
 	invalidProfileExitCode
 	unsafeCryptoExitCode
+	toolMissingExitCode
 )
 
 type RuntimeConfig struct {
@@ -23,62 +24,63 @@ type RuntimeConfig struct {
 }
 
 func main() {
-
+	// Ensure at least one argument is provided
 	if len(os.Args) < 1 {
-
-		fmt.Println("Usage: go run main.go <binary_file> [pattern_file]")
-
+		printUsage()
 		os.Exit(invalidArgsExitCode)
 	}
 
-	// Check if go compiler is installed
+	// Check if Go compiler is installed
 	if !commandExists("go") {
-		fmt.Println("go compiler could not be found. Please install Go to proceed.")
+		fmt.Println("Go compiler could not be found. Please install Go to proceed.")
 		os.Exit(invalidArgsExitCode)
 	}
 
 	// Parse command line arguments
-
 	runtimeConfig := parseCommandLineArgs()
 
 	// Print the profile file name and scanned binary file
 	fmt.Printf("Using profile file: %s\n", runtimeConfig.ProfileFilePath)
 	fmt.Printf("Scanning binary file: %s\n", runtimeConfig.BinaryFilePath)
 
+	// Load rules from the profile file
 	rules, err := utils.LoadRulesFromFile(runtimeConfig.ProfileFilePath)
-
 	if err != nil {
 		fmt.Printf("Error loading pattern file: %v\n", err)
-		os.Exit(4)
+		os.Exit(invalidProfileExitCode)
 	}
 
-	// Check if the binary file is a valid go binary
+	// Check if the binary file is a valid Go binary
 	err = checkGolangLinuxBinary(runtimeConfig.BinaryFilePath)
 	if err != nil {
 		fmt.Printf("Error checking binary file: %v\n", err)
 		os.Exit(invalidBinaryExitCode)
 	}
 
-	// Check the binary file with nm tool patterns that are allowed or
+	// Check the binary file with nm tool patterns
 	checkNMRules(rules.Rules.NmRules, runtimeConfig)
 }
 
+// printUsage prints the usage help message
+func printUsage() {
+	fmt.Printf("Usage: %s -binary <binary_file> [-profile <profile_file>]\n", os.Args[0])
+	fmt.Printf("Default profile file: %s\n", defaultProfileFilePath)
+}
+
+// checkNMRules checks the binary file against nm tool patterns
 func checkNMRules(rules []utils.Rule, config RuntimeConfig) {
 	output, err := utils.GenerateNMFile(config.BinaryFilePath)
 	if err != nil {
 		fmt.Printf("Error generating nm file: %v\n", err)
-		os.Exit(3)
+		os.Exit(toolMissingExitCode)
 	}
 
 	// Compile Regex from rules
 	regexes := utils.GetCompiledRegexs(rules)
 
 	for _, rule := range rules {
-
 		reg := regexes[rule.Name]
-
 		matchFound := reg.MatchString(output)
-
 		utils.PrintMatch(matchFound, rule)
 	}
 }
@@ -86,14 +88,15 @@ func checkNMRules(rules []utils.Rule, config RuntimeConfig) {
 // parseCommandLineArgs parses the command line arguments and returns a RuntimeConfig object
 func parseCommandLineArgs() RuntimeConfig {
 	config := RuntimeConfig{}
-	flag.StringVar(&config.ProfileFilePath, "profile", "profiles/default.yaml", "Path to the profile file containing the rules.")
+	flag.StringVar(&config.ProfileFilePath, "profile", defaultProfileFilePath, "Path to the profile file containing the rules.")
 	flag.StringVar(&config.BinaryFilePath, "binary", "", "Path to the binary file to be checked.")
 	flag.Parse()
 	return config
 }
 
-// checkGolangLinuxBinary checks if the file is a valid go binary
+// checkGolangLinuxBinary checks if the file is a valid Go binary
 func checkGolangLinuxBinary(filePath string) error {
+	// Check if the file exists
 	rule := utils.Rule{
 		Name:           "The file exists",
 		Description:    "Check if the file exists",
@@ -105,33 +108,23 @@ func checkGolangLinuxBinary(filePath string) error {
 		utils.PrintMatch(false, rule)
 		return fmt.Errorf("binary file not found: %v", err)
 	}
-	// Check if the file is a valid go binary
+
+	// Check if the file is a valid Go binary
 	rule = utils.Rule{
-		Name:           "The file is a valid go binary",
-		Description:    "Check if the file is a valid go binary",
+		Name:           "The file is a valid Go binary",
+		Description:    "Check if the file is a valid Go binary",
 		Regex:          "",
 		FoundResult:    "info",
 		NotFoundResult: "error",
 	}
-
 	cmd := exec.Command("go", "tool", "nm", filePath)
 	stdout, err := cmd.Output()
 	if err != nil {
 		utils.PrintMatch(false, rule)
-		return fmt.Errorf("file is invalid go binary: %v (%s)", err, stdout)
+		return fmt.Errorf("file is invalid Go binary: %v (%s)", err, stdout)
 	}
 	utils.PrintMatch(true, rule)
 
-	// validate the binary is built for linux
-	// rule = utils.Rule{
-	// 	Name:           "The file is built for Linux OS",
-	// 	Description:    "Check if the file is built for Linux OS",
-	// 	Regex:          "",
-	// 	FoundResult:    "info",
-	// 	NotFoundResult: "error",
-	// }
-	// isElf := isELFLinux(filePath)
-	// utils.PrintMatch(isElf, rule)
 	return nil
 }
 
@@ -140,27 +133,3 @@ func commandExists(cmd string) bool {
 	_, err := exec.LookPath(cmd)
 	return err == nil
 }
-
-// ******************************************
-// to be replaced with go version tool checks
-// ******************************************
-
-// func isELFLinux(filePath string) bool {
-
-// 	file, err := os.Open(filePath)
-// 	if err != nil {
-// 		return false
-// 	}
-// 	defer file.Close()
-
-// 	magicNumber := make([]byte, 4)
-// 	_, err = file.Read(magicNumber)
-// 	if err != nil {
-// 		return false
-// 	}
-
-// 	// Go binaries have a specific magic number
-// 	expectedMagicNumber := []byte{0x7f, 'E', 'L', 'F'} // Example for ELF binaries
-
-// 	return string(magicNumber) == string(expectedMagicNumber)
-// }
