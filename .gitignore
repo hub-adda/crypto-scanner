@@ -33,3 +33,4 @@ build.log
 cmd/binary-checker/nm_output*
 examples/fips/build/fips_web_server_linux
 examples/unsafe/unsafe
+binary-checker
