@@ -21,9 +21,28 @@ cd crypto-scanner
 chmod a+x ./install.sh
 ./install.sh
 ```
-
-
 ## Usage
+
+Checking a binary for safe cryptographic binary run this command
+```
+./binary-checker -binary my_binary -profile default.yaml 
+``` 
+The output should look like 
+```
+Using profile file: /Users/gil.adda/tmp/crypto-scanner/default.yaml
+Scanning binary file: /Users/gil.adda/tmp/crypto-scanner/binary-checker
+Check: 'The file is a valid Go binary' found.  
+Check: 'MD4 Algorithm Usage' not found.  
+Check: 'RIPEMD-160 Algorithm Usage' not found.  
+Check: 'RC4 Algorithm Usage' not found.  
+Check: 'Blowfish Algorithm Usage' not found.  
+Check: 'CAST5 Algorithm Usage' not found.  
+```
+
+Checking a binary for FIPS-140 compliant usage binary run this command
+```
+./binary-checker -binary my_binary -profile default.yaml 
+```
 
 To build the example code with different configurations, use the following commands:
 
@@ -34,22 +53,19 @@ To build a binary for general use:
 env GOOS=linux GOARCH=arm go build -o broken ./examples/broken.go
 ```
 To build a FIPS-140 compliant binary:
-### build the FIPS binary in a a linux machine 
+### build the FIPS binary in a linux machine 
 ```
 CGO_ENABLED=1 GOOS=linux GOARCH=arm64 GOEXPERIMENT=boringcrypto go build -tags boringcrypto -o fips_web_server_linux ./fips_web_server.go
 ```
-In some machines a FIPS binary cannot build with as local cc compiler, therefore there is a way to build it in a docer file
+In some machines a FIPS binary cannot build with a local cc compiler, therefore there is a way to build it in a docker file
 
-### build the FIPS binary in using docker
-
-
+### build the FIPS binary using docker
 
 ## TODOs in next steps
 1. binary-checker: add go version conditions as GOOS or minimal go version (output below)
 1. binary-checker: download and build the tool using a single command (e.g curl install script| bash
-1. complete code usage of unsafe functions as sha1, md5 which are part if the go standard libraries
+1. complete code usage of unsafe functions as sha1, md5 which are part of the go standard libraries
 1. add contribution and license policy
-
 
 ### go version output example
 This is the example output of the go version tool. 
