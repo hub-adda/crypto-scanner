@@ -9,6 +9,10 @@ import (
 	utils "crypto-scanner/internal/pkg/utils"
 )
 
+// This program scans a Go binary file against a set of rules defined in a profile file.
+// It validates the existence of the binary and profile files, checks if the binary is a valid Go binary,
+// and then scans the binary using the nm tool and the provided rules.
+
 const (
 	defaultProfileFilePath = "profiles/default.yaml"
 	invalidArgsExitCode    = iota + 1
@@ -19,7 +23,9 @@ const (
 )
 
 type RuntimeConfig struct {
-	BinaryFilePath  string
+	// BinaryFilePath is the path to the binary file to be checked.
+	BinaryFilePath string
+	// ProfileFilePath is the path to the profile file containing the rules.
 	ProfileFilePath string
 }
 
@@ -38,6 +44,20 @@ func main() {
 
 	// Parse command line arguments
 	runtimeConfig := parseCommandLineArgs()
+
+	// Validate if the binary file exists
+	if _, err := os.Stat(runtimeConfig.BinaryFilePath); os.IsNotExist(err) {
+		fmt.Printf("Binary file does not exist: %s\n", runtimeConfig.BinaryFilePath)
+		printUsage()
+		os.Exit(invalidBinaryExitCode)
+	}
+
+	// Validate if the profile file exists
+	if _, err := os.Stat(runtimeConfig.ProfileFilePath); os.IsNotExist(err) {
+		fmt.Printf("Profile file does not exist: %s\n", runtimeConfig.ProfileFilePath)
+		printUsage()
+		os.Exit(invalidProfileExitCode)
+	}
 
 	// Print the profile file name and scanned binary file
 	fmt.Printf("Using profile file: %s\n", runtimeConfig.ProfileFilePath)
@@ -91,6 +111,7 @@ func parseCommandLineArgs() RuntimeConfig {
 	flag.StringVar(&config.ProfileFilePath, "profile", defaultProfileFilePath, "Path to the profile file containing the rules.")
 	flag.StringVar(&config.BinaryFilePath, "binary", "", "Path to the binary file to be checked.")
 	flag.Parse()
+
 	return config
 }
 
