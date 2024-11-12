@@ -1,0 +1,51 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Binary Scanner-webserver",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/binary-checker/main.go",
+            "args": ["-binary", "${workspaceFolder}/examples/fips/build/fips_web_server_linux",  "-profile", "${workspaceFolder}/profiles/fips.yaml"]
+        },
+        {
+            "name": "Binary Scanner -unsafe",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/binary-checker/main.go",
+            "args": ["-binary", "${workspaceFolder}/examples/unsafe/unsafe",  "-profile", "${workspaceFolder}/profiles/default.yaml"]
+        },
+        {
+            "name": "Code Checker FIPS - connector example",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/code-checker/main.go",
+            "args": ["-src", "/Users/gil.adda/go/src/component-manager-client/cmd/component-manager-client/linux_main.go" , "-profile", "${workspaceFolder}/profiles/fips.yaml" ],
+            "cwd": "/Users/gil.adda/go/src/component-manager-client",
+        },
+        {
+            "name": "2 Code Checker FIPS - connector example",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/code-checker/main.go",
+            "args": ["-src", "/Users/gil.adda/go/src/component-manager-client" , "-profile", "${workspaceFolder}/profiles/fips.yaml" ],
+            "cwd": "/Users/gil.adda/go/src/component-manager-client",
+        },
+        {
+            "name": "Code Checker - FIPS example",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/code-checker/main.go",
+            "args": ["-src", "${workspaceFolder}/examples/fips/fips_web_server.go" , "-profile", "${workspaceFolder}/profiles/fips.yaml" ]
+        },
+       
+    ]
+}
