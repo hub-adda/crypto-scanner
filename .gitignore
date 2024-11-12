@@ -36,3 +36,4 @@ examples/unsafe/unsafe
 binary-checker
 default.yaml
 fips.yaml
+nm_output.txt
