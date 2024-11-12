@@ -25,7 +25,7 @@ chmod a+x ./install.sh
 
 ### Checking a binary for safe cryptographic usage
  
-run this command
+Run this command
 ```
 ./binary-checker -binary my_binary -profile default.yaml 
 ``` 
@@ -43,7 +43,7 @@ Check: 'CAST5 Algorithm Usage' not found.
 
 ### Checking a binary for FIPS-140 compliant usage 
 
-run this command
+Run this command
 ```
 ./binary-checker -binary my_binary -profile default.yaml 
 ```
