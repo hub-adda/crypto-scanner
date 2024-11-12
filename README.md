@@ -23,7 +23,9 @@ chmod a+x ./install.sh
 ```
 ## Usage
 
-Checking a binary for safe cryptographic binary run this command
+### Checking a binary for safe cryptographic usage
+ 
+run this command
 ```
 ./binary-checker -binary my_binary -profile default.yaml 
 ``` 
@@ -39,7 +41,9 @@ Check: 'Blowfish Algorithm Usage' not found.
 Check: 'CAST5 Algorithm Usage' not found.  
 ```
 
-Checking a binary for FIPS-140 compliant usage binary run this command
+### Checking a binary for FIPS-140 compliant usage 
+
+run this command
 ```
 ./binary-checker -binary my_binary -profile default.yaml 
 ```
