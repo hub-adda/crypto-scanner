@@ -24,7 +24,6 @@ go.work.sum
 # env file
 .env
 main
-main.go
 main_linux
 examples/fips/cert.pem
 examples/fips/private.pem
