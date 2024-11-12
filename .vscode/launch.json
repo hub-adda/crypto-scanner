@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Binary Scanner no args",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/cmd/binary-checker/main.go",
+            "args": [ "-profile", "default.yaml", "-binary", "binary-checker"]
+        },        {
             "name": "Binary Scanner-webserver",
             "type": "go",
             "request": "launch",

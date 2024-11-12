@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 
 	utils "crypto-scanner/internal/pkg/utils"
 )
@@ -108,11 +109,27 @@ func checkNMRules(rules []utils.Rule, config RuntimeConfig) {
 // parseCommandLineArgs parses the command line arguments and returns a RuntimeConfig object
 func parseCommandLineArgs() RuntimeConfig {
 	config := RuntimeConfig{}
-	flag.StringVar(&config.ProfileFilePath, "profile", defaultProfileFilePath, "Path to the profile file containing the rules.")
+	flag.StringVar(&config.ProfileFilePath, "profile", "", "Path to the profile file containing the rules.")
 	flag.StringVar(&config.BinaryFilePath, "binary", "", "Path to the binary file to be checked.")
 	flag.Parse()
 
+	config.ProfileFilePath = convertToAbsolutePath(config.ProfileFilePath, invalidProfileExitCode)
+	config.BinaryFilePath = convertToAbsolutePath(config.BinaryFilePath, invalidBinaryExitCode)
+
 	return config
+}
+
+// convertToAbsolutePath converts a relative path to an absolute path
+func convertToAbsolutePath(path string, exitCode int) string {
+	if !filepath.IsAbs(path) && path != "" {
+		absPath, err := filepath.Abs(path)
+		if err != nil {
+			fmt.Printf("Error converting path to absolute: %v\n", err)
+			os.Exit(exitCode)
+		}
+		return absPath
+	}
+	return path
 }
 
 // checkGolangLinuxBinary checks if the file is a valid Go binary
