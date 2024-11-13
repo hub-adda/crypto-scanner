@@ -23,3 +23,17 @@ go.work.sum
 
 # env file
 .env
+main
+main_linux
+examples/fips/cert.pem
+examples/fips/private.pem
+broken
+broken_fips
+build.log
+cmd/binary-checker/nm_output*
+examples/fips/build/fips_web_server_linux
+examples/unsafe/unsafe
+binary-checker
+default.yaml
+fips.yaml
+nm_output.txt

@@ -1,0 +1,39 @@
+rules:
+  nm_rules:  
+       
+    # standard crypto libraries with unsafe implementations are checked with another tool
+    
+    # extended golang libraries with unsafe implementations
+    - name: "MD4 Algorithm Usage"
+      description: "Check if the code uses MD4, which is a broken algorithm. Reference: [MD4](https://en.wikipedia.org/wiki/MD4)"
+      regex: "golang.org/x/crypto/md4.New"
+      found_result: "error"
+      not_found_result: "info"
+
+    - name: "RIPEMD-160 Algorithm Usage"
+      description: "Check if the code uses RIPEMD-160, which is a broken algorithm. Reference: [RIPEMD-160](https://en.wikipedia.org/wiki/RIPEMD)"
+      regex: "golang.org/x/crypto/ripemd160.New"
+      found_result: "error"
+      not_found_result: "info"
+
+    - name: "RC4 Algorithm Usage"
+      description: "Check if the code uses RC4, which is a broken algorithm. Reference: [RC4](https://en.wikipedia.org/wiki/RC4)"
+      regex: "golang.org/x/crypto/rc4.*"
+      found_result: "error"
+      not_found_result: "info"
+
+    # external libraries with unsafe implementations
+    - name: "Blowfish Algorithm Usage"
+      description: "Check if the code uses Blowfish, which is a broken algorithm. Reference: [Blowfish](https://en.wikipedia.org/wiki/Blowfish_(cipher))"
+      regex: "golang.org/x/crypto/blowfish.NewCipher"
+      found_result: "error"
+      not_found_result: "info"
+
+    - name: "CAST5 Algorithm Usage"
+      description: "Check if the code uses CAST5, which is a broken algorithm. Reference: [CAST5](https://en.wikipedia.org/wiki/CAST-128)"
+      regex: "golang.org/x/crypto/cast5.*"
+      found_result: "error"
+      not_found_result: "info"
+
+
+
