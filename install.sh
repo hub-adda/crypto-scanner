@@ -14,7 +14,7 @@ fi
 # Define variables
 REPO_NAME=https://github.com/GilAddaCyberark/crypto-scanner/
 REPO_DIR=crypto-scanner
-BRANCH=draft
+BRANCH=main
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 TMP_DIR_NAME=tmp
 TMP_DIR_PATH=$SCRIPT_DIR/$TMP_DIR_NAME
