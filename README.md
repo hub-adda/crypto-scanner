@@ -73,9 +73,11 @@ In some machines a FIPS binary cannot build with a local cc compiler, therefore 
 
 ### go version output example
 This is the example output of the go version tool. 
-```
+``` bash
 go version -m binary-checker
 ```
+
+``` txt
 binary-checker: go1.23.1
         path    crypto-scanner/cmd/binary-checker
         mod     crypto-scanner  (devel)
@@ -94,12 +96,16 @@ binary-checker: go1.23.1
         build   vcs.revision=6bb4da79ff6a79852d58eece9dc88e1ea69c483d
         build   vcs.time=2024-11-12T13:42:30Z
         build   vcs.modified=false
-
 ```
+
+``` bash
 go version -m binary-checker examples/fips/build/fips_web_server_linux
 ```
+
 This is the output of a FIPS-140 compliant binary  ( GOEXPERIMENT=boringcrypto, )
 
+
+``` text
 binary-checker: go1.23.1
         path    crypto-scanner/cmd/binary-checker
         mod     crypto-scanner  (devel)
@@ -132,6 +138,6 @@ examples/fips/build/fips_web_server_linux: go1.23.2 X:boringcrypto
         build   GOEXPERIMENT=boringcrypto
         build   GOOS=linux
         build   GOARM64=v8.0
-
+```
 The future plan is to set conditions and validate the binary under those conditions
 
