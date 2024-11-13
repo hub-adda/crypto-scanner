@@ -18,12 +18,32 @@ const (
 	errResult           = "error"
 	infoResult          = "info"
 	warnResult          = "warn"
-	resultFormat        = "Check:%s '%s' %s. %s %s\n"
 	defaultNMOutputFile = "nm_output.txt"
 
 	invalidProfileExitCode = 4
 )
 
+// Rule represents a single rule for checking the binary.
+type Rule struct {
+	Name           string `yaml:"name"`
+	Description    string `yaml:"description"`
+	Regex          string `yaml:"regex"`
+	FoundResult    string `yaml:"found_result"`
+	NotFoundResult string `yaml:"not_found_result"`
+}
+
+// Rules contains all the rules for checking the binary.
+type Rules struct {
+	NmRules        []Rule `yaml:"nm_rules"`
+	CallGraphRules []Rule `yaml:"call_graph_rules"`
+}
+
+// RulesConfig represents the configuration for all rules.
+type RulesConfig struct {
+	Rules Rules `yaml:"rules"`
+}
+
+// GetResultColor returns the color code for a given result severity.
 func GetResultColor(result string) string {
 	switch result {
 	case errResult:
@@ -37,6 +57,7 @@ func GetResultColor(result string) string {
 	}
 }
 
+// PrintMatch prints the result of a rule match.
 func PrintMatch(matchResult bool, rule Rule) {
 
 	var severity string
@@ -52,30 +73,24 @@ func PrintMatch(matchResult bool, rule Rule) {
 	}
 
 	color := GetResultColor(severity)
+	var foundMessage string
 	if matchResult {
-		fmt.Printf(resultFormat, color, rule.Name, "found", message, colorReset)
+		foundMessage = "found"
 	} else {
-		fmt.Printf(resultFormat, color, rule.Name, "not found", message, colorReset)
+		foundMessage = "not found"
 	}
+
+	// Print check results
+	if severity == errResult {
+		fmt.Printf("Check: %s %s - %s.  %s %s. \nTo fix: %s %s\n", color, rule.Name, severity, rule.Name, foundMessage, message, colorReset)
+	} else {
+		fmt.Printf("Check: %s %s - %s.  %s %s. %s\n", color, rule.Name, severity, rule.Name, foundMessage, colorReset)
+
+	}
+
 }
 
-type Rule struct {
-	Name           string `yaml:"name"`
-	Description    string `yaml:"description"`
-	Regex          string `yaml:"regex"`
-	FoundResult    string `yaml:"found_result"`
-	NotFoundResult string `yaml:"not_found_result"`
-}
-
-type Rules struct {
-	NmRules        []Rule `yaml:"nm_rules"`
-	CallGraphRules []Rule `yaml:"call_graph_rules"`
-}
-
-type RulesConfig struct {
-	Rules Rules `yaml:"rules"`
-}
-
+// GenerateNMFile generates the nm output file for the given binary file path.
 func GenerateNMFile(binaryFilePath string) (string, error) {
 	// execute go tool nm on the binary file with profiles
 	cmd := exec.Command("go", "tool", "nm", binaryFilePath)
@@ -96,6 +111,7 @@ func GenerateNMFile(binaryFilePath string) (string, error) {
 	return nmFileOutputString, nil
 }
 
+// LoadRulesFromFile loads the rules from the specified YAML file.
 func LoadRulesFromFile(filename string) (*RulesConfig, error) {
 	// Load the pattern file
 	if _, err := os.Stat(filename); err != nil {
@@ -119,6 +135,7 @@ func LoadRulesFromFile(filename string) (*RulesConfig, error) {
 	return &config, nil
 }
 
+// GetCompiledRegexs compiles the regex patterns for the given rules.
 func GetCompiledRegexs(rules []Rule) map[string]*regexp.Regexp {
 	regexes := make(map[string]*regexp.Regexp)
 	for _, rule := range rules {

@@ -16,7 +16,7 @@ crypto-scanner is a comprehensive tool designed to enhance the security of Go ap
 
 1. Clone the repo and build the tools:
 ```
-git clone --branch draft https://github.com/GilAddaCyberark/crypto-scanner/
+git clone https://github.com/GilAddaCyberark/crypto-scanner/
 cd crypto-scanner
 chmod a+x ./install.sh
 ./install.sh
