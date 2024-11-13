@@ -81,49 +81,6 @@ func getSsaPkgs(codeFilePath string) (*ssa.Program, []*ssa.Package) {
 			packages.NeedTypes |
 			packages.NeedTypesInfo |
 			packages.NeedTypesSizes |
-			packages.NeedImports | packages.NeedDeps,
-	}
-
-	// Load the packages
-
-	pkgs, err := packages.Load(cfg, codeFilePath)
-	if err != nil {
-		fmt.Println("Error loading package:", err)
-		return nil, nil
-	}
-
-	// Check for errors in the loaded packages
-	if packages.PrintErrors(pkgs) > 0 {
-		fmt.Println("Errors found in packages")
-		return nil, nil
-	}
-
-	// // Filter out the specific package
-	// var filteredPkgs []*packages.Package
-	// for _, pkg := range pkgs {
-	//     if pkg.PkgPath != "crypto/tls/fipsonly" {
-	//         filteredPkgs = append(filteredPkgs, pkg)
-	//     }
-	// }
-
-	// Build SSA packages
-	prog, ssaPkgs := ssautil.AllPackages(pkgs, 0)
-	if ssaPkgs == nil {
-		fmt.Println("No SSA packages found")
-		return nil, nil
-	}
-
-	prog.Build()
-	return prog, ssaPkgs
-}
-
-func getSsaPkgs2(codeFilePath string) (*ssa.Program, []*ssa.Package) {
-	cfg := &packages.Config{
-		Mode: packages.NeedFiles |
-			packages.NeedSyntax |
-			packages.NeedTypes |
-			packages.NeedTypesInfo |
-			packages.NeedTypesSizes |
 			packages.NeedImports |
 			packages.NeedDeps |
 			packages.NeedName,
@@ -151,7 +108,6 @@ func getSsaPkgs2(codeFilePath string) (*ssa.Program, []*ssa.Package) {
 	}
 
 	prog.Build()
-
 	return prog, ssaPkgs
 }
 

@@ -3,8 +3,11 @@ package main
 import (
 	"crypto/des"
 	"crypto/dsa"
+	"crypto/md5"
 	"crypto/rand"
+	"crypto/rc4"
 	"crypto/rsa"
+	"crypto/sha1"
 	"crypto/tls"
 	"crypto/x509"
 	"crypto/x509/pkix"
@@ -18,6 +21,7 @@ import (
 
 	"github.com/htruong/go-md2"
 	"golang.org/x/crypto/blowfish"
+	"golang.org/x/crypto/cast5"
 	"golang.org/x/crypto/md4"
 	"golang.org/x/crypto/ripemd160"
 )
@@ -92,13 +96,13 @@ func unsafe_des_example() {
 }
 
 func unsafe_cast5_example() {
-	// key := []byte("example key 1234")
-	// cipher, err := cast5.NewCipher(key)
-	// if err != nil {
-	// 	fmt.Println("Error creating cipher:", err)
-	// 	return
-	// }
-	// fmt.Printf("Encrypted: %v\n", cipher)
+	key := []byte("example key 1234")
+	cipher, err := cast5.NewCipher(key)
+	if err != nil {
+		fmt.Println("Error creating cipher:", err)
+		return
+	}
+	fmt.Printf("CAST5 Cipher: %v\n", cipher)
 }
 
 func unsafe_blowfish_example() {
@@ -117,8 +121,9 @@ func unsafe_ripemd160_example() {
 }
 
 func unsafe_md5_example() {
-	// hash := md5.New()
-	// hash.Write([]byte(data))
+	hash := md5.New()
+	hash.Write([]byte(data))
+	fmt.Printf("MD5: %x\n", hash.Sum(nil))
 }
 
 func unsafe_md4_example() {
@@ -127,8 +132,9 @@ func unsafe_md4_example() {
 }
 
 func unsafe_sha1_example() {
-	// hash := sha1.New()
-	// hash.Write([]byte(data))
+	hash := sha1.New()
+	hash.Write([]byte(data))
+	fmt.Printf("SHA1: %x\n", hash.Sum(nil))
 }
 
 func unsafe_md2_example() {
@@ -137,15 +143,13 @@ func unsafe_md2_example() {
 }
 
 func unsafe_rc4_example() {
-	// key := []byte("examplekey123")
-
-	// Create the RC4 cipher
-	// cipher, err := rc4.NewCipher(key)
-	// if err != nil {
-	// 	fmt.Println("Error creating cipher:", err)
-	// 	return
-	// }
-	// fmt.Printf("Encrypted: %v\n", cipher)
+	key := []byte("examplekey123")
+	cipher, err := rc4.NewCipher(key)
+	if err != nil {
+		fmt.Println("Error creating cipher:", err)
+		return
+	}
+	fmt.Printf("RC4 Cipher: %v\n", cipher)
 }
 
 func unsafe_dsa_example() {
