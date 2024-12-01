@@ -12,7 +12,7 @@ then
 fi
 
 # Define variables
-REPO_NAME=https://github.com/GilAddaCyberark/crypto-scanner/
+REPO_NAME=https://github.com/hub-adda/crypto-scanner/
 REPO_DIR=crypto-scanner
 BRANCH=main
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
