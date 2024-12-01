@@ -11,14 +11,15 @@ import (
 )
 
 const (
-	colorReset          = "\033[0m"
-	colorRed            = "\033[31m"
-	colorGreen          = "\033[32m"
-	colorYellow         = "\033[33m"
-	errResult           = "error"
-	infoResult          = "info"
-	warnResult          = "warn"
-	defaultNMOutputFile = "nm_output.txt"
+	colorReset               = "\033[0m"
+	colorRed                 = "\033[31m"
+	colorGreen               = "\033[32m"
+	colorYellow              = "\033[33m"
+	errResult                = "error"
+	infoResult               = "info"
+	warnResult               = "warn"
+	defaultNMOutputFile      = "nm_output.txt"
+	defaultVersionOutputFile = "go_version_output.txt"
 
 	invalidProfileExitCode = 4
 )
@@ -35,6 +36,7 @@ type Rule struct {
 // Rules contains all the rules for checking the binary.
 type Rules struct {
 	NmRules        []Rule `yaml:"nm_rules"`
+	VersionRules   []Rule `yaml:"version_rules"`
 	CallGraphRules []Rule `yaml:"call_graph_rules"`
 }
 
@@ -82,12 +84,11 @@ func PrintMatch(matchResult bool, rule Rule) {
 
 	// Print check results
 	if severity == errResult {
-		fmt.Printf("Check: %s %s - %s.  %s %s. \nTo fix: %s %s\n", color, rule.Name, severity, rule.Name, foundMessage, message, colorReset)
+		fmt.Printf("Check: %s %s - %s.  %s %s. \nTo fix: %s %s\n\n", color, rule.Name, severity, rule.Name, foundMessage, message, colorReset)
 	} else {
-		fmt.Printf("Check: %s %s - %s.  %s %s. %s\n", color, rule.Name, severity, rule.Name, foundMessage, colorReset)
+		fmt.Printf("Check: %s %s - %s.  %s %s. %s\n\n", color, rule.Name, severity, rule.Name, foundMessage, colorReset)
 
 	}
-
 }
 
 // GenerateNMFile generates the nm output file for the given binary file path.
@@ -109,6 +110,27 @@ func GenerateNMFile(binaryFilePath string) (string, error) {
 	}
 	nmFileOutputString := string(nmFileOutput)
 	return nmFileOutputString, nil
+}
+
+// Generate Go generates the go version output file for the given binary file path.
+func GenerateVersionFile(binaryFilePath string) (string, error) {
+	// execute go tool nm on the binary file with profiles
+	cmd := exec.Command("go", "version", "-m", binaryFilePath)
+	stdout, err := cmd.Output()
+	if err != nil {
+		return "", fmt.Errorf("error executing go version command: %v", err)
+	}
+	err = os.WriteFile(defaultVersionOutputFile, stdout, 0644)
+	if err != nil {
+		return "", fmt.Errorf("error writing go version output to file: %v", err)
+	}
+
+	goFileOutput, error := os.ReadFile(defaultVersionOutputFile)
+	if error != nil {
+		return "", fmt.Errorf("error reading go version output file: %v", error)
+	}
+	versionFileOutputString := string(goFileOutput)
+	return versionFileOutputString, nil
 }
 
 // LoadRulesFromFile loads the rules from the specified YAML file.

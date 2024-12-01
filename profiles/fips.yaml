@@ -48,5 +48,29 @@ rules:
       found_result: "error"
       not_found_result: "info"
 
+  version_rules:
+    - name: 'vcs modified before build'
+      description: 'The code was modified after source control. It may be an indication of a breach'
+      regex: 'vcs.modified=true'
+      found_result: 'warn'
+      not_found_result: 'info'
+
+    - name: 'use of boring crypto#1'
+      description: 'The code is built with boring crypto library'
+      regex: 'X:boringcrypto'
+      found_result: 'info'
+      not_found_result: 'error'
+
+    - name: 'use of boring crypto#2'
+      description: 'The code is built with boring crypto library'
+      regex: 'GOEXPERIMENT=boringcrypto'
+      found_result: 'info'
+      not_found_result: 'error'
+
+    - name: 'built for linux'
+      description: 'The code is built for linux'
+      regex: 'GOOS=linux'
+      found_result: 'info'
+      not_found_result: 'error'
 
 
