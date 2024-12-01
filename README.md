@@ -1,20 +1,16 @@
 # crypto-scanner
-
 Golang is a powerful programming language, but like any other language, it is crucial to ensure that cryptographic implementations are safe and secure. Unsafe cryptographic practices can lead to vulnerabilities and potential security breaches.
 
 ## About
-
 crypto-scanner is a comprehensive tool designed to enhance the security of Go applications by identifying unsafe cryptographic implementations. It consists of the following components:
 
 - **Binary Checker**: Scans compiled binaries to detect the use of unsafe cryptographic functions. It supports two configurations:
   - **Unsafe Cryptography**: Identifies the use of cryptographic functions that are considered insecure.
   - **FIPS-Compliant**: Ensures that the cryptographic functions used comply with FIPS (Federal Information Processing Standards) specific rules.
 - **Code Checker** [Future]: Analyzes source code to identify insecure cryptographic practices.
-- **Safe Compiler [future]**: A Go compiler that prevents compilation if unsafe implementations are found. It should identify unsafe usage of standard crypto libraries such as MD5, SHA-1. It will ensure that only secure cryptographic functions are available.
 
 ## Installation
-
-1. un a single command on a temp directory to download and build the tool
+1. Run this command on a temp directory to download and build the tool
 ``` bash
 curl -s  https://raw.githubusercontent.com/hub-adda/crypto-scanner/refs/heads/main/install.sh | bash
 ```
@@ -47,7 +43,7 @@ Check: 'Blowfish Algorithm Usage' not found.
 Check: 'CAST5 Algorithm Usage' not found.  
 ```
 ### What about SHA-1, md5 and RSA with small keys?
-TBD...
+Our plan is either run a code checker of provide a linter 
 
 ### Checking a binary for FIPS-140 compliant usage 
 
