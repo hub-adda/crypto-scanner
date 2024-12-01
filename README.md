@@ -9,18 +9,24 @@ crypto-scanner is a comprehensive tool designed to enhance the security of Go ap
 - **Binary Checker**: Scans compiled binaries to detect the use of unsafe cryptographic functions. It supports two configurations:
   - **Unsafe Cryptography**: Identifies the use of cryptographic functions that are considered insecure.
   - **FIPS-Compliant**: Ensures that the cryptographic functions used comply with FIPS (Federal Information Processing Standards) specific rules.
-- **Code Checker**: Analyzes source code to identify insecure cryptographic practices.
+- **Code Checker** [Future]: Analyzes source code to identify insecure cryptographic practices.
 - **Safe Compiler [future]**: A Go compiler that prevents compilation if unsafe implementations are found. It should identify unsafe usage of standard crypto libraries such as MD5, SHA-1. It will ensure that only secure cryptographic functions are available.
 
 ## Installation
 
-1. Clone the repo and build the tools:
+1. un a single command on a temp directory to download and build the tool
+``` bash
+curl -s  https://raw.githubusercontent.com/hub-adda/crypto-scanner/refs/heads/main/install.sh | bash
+```
+
+2. Or clone the repo and build the tools:
 ```
 git clone https://github.com/GilAddaCyberark/crypto-scanner/
 cd crypto-scanner
 chmod a+x ./install.sh
 ./install.sh
 ```
+
 ## Usage
 
 ### Checking a binary for safe cryptographic usage
@@ -40,12 +46,14 @@ Check: 'RC4 Algorithm Usage' not found.
 Check: 'Blowfish Algorithm Usage' not found.  
 Check: 'CAST5 Algorithm Usage' not found.  
 ```
+### What about SHA-1, md5 and RSA with small keys?
+TBD...
 
 ### Checking a binary for FIPS-140 compliant usage 
 
 Run this command
 ```
-./binary-checker -binary my_binary -profile default.yaml 
+./binary-checker -binary my_binary -profile fips.yaml 
 ```
 
 To build the example code with different configurations, use the following commands:
